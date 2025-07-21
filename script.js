@@ -122,13 +122,13 @@ function updateSensorInputs(values) {
 // Atualiza os dados da página
 async function updateData() {
     try {
-        const response = await fetch('/api/sensors/get-data');
-        const data     = await response.json();
+        let response = await fetch('/api/sensors/get-data');
+        let data     = await response.json();
 
-        const pressureValue    = data.pressure;
-        const temperatureValue = data.temperature;
-        const humidityValue    = data.humidity;
-        const altitudeValue    = data.altitude;
+        let pressureValue    = data.pressure;
+        let temperatureValue = data.temperature;
+        let humidityValue    = data.humidity;
+        let altitudeValue    = data.altitude;
 
         // Define os valores mínimos e máximos da temperatura e umidade
         sensors_limit_values.temperature_min = (data.temperature_min !== undefined) ? data.temperature_min : 10;
