@@ -63,7 +63,7 @@ let plotOptions = {
     }],
     chart: {
         height: 350,
-        type: 'line',
+        type: 'area',
         toolbar: {
             tools: {
                 download: false
@@ -73,7 +73,7 @@ let plotOptions = {
             enabled: true,
             easing: 'linear',
             dynamicAnimation: {
-                speed: 1000
+                speed: 500
             }
         },
         fontFamily: 'Roboto Mono'
