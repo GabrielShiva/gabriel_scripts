@@ -1,38 +1,3 @@
-// Pegar coordenadas
-// function getCoordinates() {
-//     const options = { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 };
-
-//     function success(pos) {
-//         let crd = pos.coords;
-//         let lat = crd.latitude.toString();
-//         let lng = crd.longitude.toString();
-//         let coordinates = [lat, lng];
-//         getCity(coordinates);
-//         return;
-//     }
-//     function error(err) {console.warn(`ERROR(${err.code}): ${err.message}`);}
-
-//     navigator.geolocation.getCurrentPosition(success, error, options);
-// }
-// function getCity(coordinates) {
-//     let xhr = new XMLHttpRequest();
-//     let lat = coordinates[0];
-//     let lng = coordinates[1];
-//     xhr.open('GET', "https://us1.locationiq.com/v1/reverse.php?key=KEYAPI&lat=" +
-//     lat + "&lon=" + lng + "&format=json", true);
-//     xhr.send();
-//     xhr.onreadystatechange = processRequest;
-//     xhr.addEventListener("readystatechange", processRequest, false);
-//     function processRequest(e) {
-//         if (xhr.readyState == 4 && xhr.status == 200) {
-//             let response = JSON.parse(xhr.responseText);
-//             document.getElementById('localization-box').textContent = `${response.address.city}, ${response.address.state}`;
-//             return;
-//         }
-//     }
-// }
-// getCoordinates();
-
 let currentMetric = 'temperature';
 const numberOfPoints = 25;
 let limitsUpdateCounter = 0;
@@ -259,6 +224,32 @@ async function updateLimits(params) {
     }
 }
 
+async function updateOffsets(params) {
+    // Cria a URL com os parâmetros GET
+    const queryParams = new URLSearchParams({
+        temperature_offset: params.temperature_offset,
+        humidity_offset: params.humidity_offset,
+        pressure_offset: params.pressure_offset
+    });
+
+    const url = `/api/sensors/offsets?${queryParams.toString()}`;
+
+     try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            console.log("Erro ao salvar os offsets!!!");
+
+            throw new Error(`Erro ao enviar dados: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Dados enviados com sucesso!");
+    } catch (error) {
+        console.error("Erro na requisição:", error);
+    }
+}
+
 document.getElementById('btn-sensors-levels').addEventListener('click', function () {
     let sensors_limit_to_update = {
         temperature_min: document.getElementById('temperature-min').value,
@@ -271,6 +262,19 @@ document.getElementById('btn-sensors-levels').addEventListener('click', function
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
 });
+
+document.getElementById('btn-offset').addEventListener('click', function () {
+    let sensors_offset = {
+        temperature_offset: document.getElementById('temperature-offset').value,
+        humidity_offset: document.getElementById('humidity-offset').value,
+        pressure_offset: document.getElementById('pressure-offset').value
+    };
+
+    updateOffsets(sensors_offset);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
 
 setInterval(updateData, 1000);
 updateSensorInputs(sensors_limit_values);
