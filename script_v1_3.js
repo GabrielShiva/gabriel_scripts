@@ -34,7 +34,8 @@
 // getCoordinates();
 
 let currentMetric = 'temperature';
-const numberOfPoints = 30;
+const numberOfPoints = 25;
+let limitsUpdateCounter = 0;
 
 // Gráficos
 let plotData = {
@@ -109,8 +110,6 @@ let plotOptions = {
 const chart = new ApexCharts(document.querySelector("#plots-card"), plotOptions);
 chart.render();
 
-let limitsUpdateCounter = 0;
-
 // Atualiza os valores dos sensores e cards
 function updateSensorInputs(values) {
     if (limitsUpdateCounter == 0) {
@@ -146,9 +145,9 @@ async function updateData() {
         limitsUpdateCounter++;
 
         // Atualiza os cards superiores
-        document.getElementById('pressure-box').textContent    = `${Math.round(pressureValue)} kPa`;
+        document.getElementById('pressure-box').textContent    = `${Math.round(pressureValue)} hPa`;
         document.getElementById('temperature-box').textContent = `${Math.round(temperatureValue)} °C`;
-        document.getElementById('humidity-box').textContent    = `${Math.round(humidityValue)} %`;
+        document.getElementById('humidity-box').textContent    = `${Math.round(humidityValue)}%`;
         document.getElementById('altitude-box').textContent    = `${Math.round(altitudeValue)} m`;
 
         // Atualiza o relógio mostrado
@@ -161,13 +160,13 @@ async function updateData() {
         plotData.humidity.push(humidityValue);
         plotData.categories.push(now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
 
-        // Mantém o gráfico com 15 pontos
-        // if (plotData.temperature.length > 15) {
-        //     plotData.temperature.shift();
-        //     plotData.humidity.shift();
-        //     plotData.pressure.shift();
-        //     plotData.categories.shift();
-        // }
+        // Mantém o gráfico com 25 pontos
+        if (plotData.temperature.length > numberOfPoints) {
+             plotData.temperature.shift();
+             plotData.humidity.shift();
+             plotData.pressure.shift();
+             plotData.categories.shift();
+        }
 
         // Atualiza o gráfico com os novos dados da métrica ativa
         updateChartSeries();
