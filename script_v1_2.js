@@ -34,7 +34,7 @@
 // getCoordinates();
 
 let currentMetric = 'temperature';
-const numberOfPoints = 100;
+const numberOfPoints = 30;
 
 // Gráficos
 let plotData = {
