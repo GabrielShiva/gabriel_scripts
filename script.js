@@ -34,15 +34,16 @@
 // getCoordinates();
 
 let currentMetric = 'temperature';
+const numberOfPoints = 100;
 
 // Gráficos
 let plotData = {
-    pressure: Array(15).fill(0),
-    temperature: Array(15).fill(0),
-    humidity: Array(15).fill(0),
-    categories: Array(15).fill(null).map((_, i) => {
+    pressure: Array(numberOfPoints).fill(0),
+    temperature: Array(numberOfPoints).fill(0),
+    humidity: Array(numberOfPoints).fill(0),
+    categories: Array(numberOfPoints).fill(null).map((_, i) => {
         const d = new Date();
-        d.setSeconds(d.getSeconds() - (15 - i) * 5);
+        d.setSeconds(d.getSeconds() - (numberOfPoints - i) * 5);
         return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     })
 };
@@ -155,12 +156,12 @@ async function updateData() {
         plotData.categories.push(now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
 
         // Mantém o gráfico com 15 pontos
-        if (plotData.temperature.length > 15) {
-            plotData.temperature.shift();
-            plotData.humidity.shift();
-            plotData.pressure.shift();
-            plotData.categories.shift();
-        }
+        // if (plotData.temperature.length > 15) {
+        //     plotData.temperature.shift();
+        //     plotData.humidity.shift();
+        //     plotData.pressure.shift();
+        //     plotData.categories.shift();
+        // }
 
         // Atualiza o gráfico com os novos dados da métrica ativa
         updateChartSeries();
