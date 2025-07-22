@@ -63,7 +63,7 @@ let plotOptions = {
     }],
     chart: {
         height: 350,
-        type: 'area',
+        type: 'line',
         toolbar: {
             tools: {
                 download: false
@@ -73,7 +73,7 @@ let plotOptions = {
             enabled: true,
             easing: 'linear',
             dynamicAnimation: {
-                speed: 350
+                speed: 1000
             }
         },
         fontFamily: 'Roboto Mono'
@@ -261,6 +261,6 @@ document.getElementById('btn-sensors-levels').addEventListener('click', function
     updateLimits(sensors_limit_to_update);
 });
 
-setInterval(updateData, 2000);
+setInterval(updateData, 1000);
 updateSensorInputs(sensors_limit_values);
 updateData();
