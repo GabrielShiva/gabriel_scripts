@@ -268,6 +268,8 @@ document.getElementById('btn-sensors-levels').addEventListener('click', function
     };
 
     updateLimits(sensors_limit_to_update);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
 setInterval(updateData, 1000);
