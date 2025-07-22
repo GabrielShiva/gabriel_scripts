@@ -150,6 +150,15 @@ async function updateData() {
         document.getElementById('humidity-box').textContent    = `${Math.round(humidityValue)}%`;
         document.getElementById('altitude-box').textContent    = `${Math.round(altitudeValue)} m`;
 
+        if ((temperatureValue < sensors_limit_values.temperature_min || temperatureValue > sensors_limit_values.temperature_max) ||
+           (humidityValue < sensors_limit_values.humidity_min || humidityValue > sensors_limit_values.humidity_max) 
+           ){
+            document.getElementById('alert-box').classList.remove('hidden');
+            document.getElementById('alert-box-msg').textContent = 'A temperatura/umidade do local se encontra fora dos limites estabelecidos!';
+        } else {
+            document.getElementById('alert-box').classList.add('hidden');
+        }
+
         // Atualiza o relógio mostrado
         const now = new Date();
         document.getElementById('timestamp-data').textContent = now.toLocaleTimeString('pt-BR');
