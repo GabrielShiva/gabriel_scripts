@@ -109,12 +109,16 @@ let plotOptions = {
 const chart = new ApexCharts(document.querySelector("#plots-card"), plotOptions);
 chart.render();
 
+let limitsUpdateCounter = 0;
+
 // Atualiza os valores dos sensores e cards
 function updateSensorInputs(values) {
-    document.getElementById('temperature-min').value = values.temperature_min;
-    document.getElementById('temperature-max').value = values.temperature_max;
-    document.getElementById('humidity-min').value = values.humidity_min;
-    document.getElementById('humidity-max').value = values.humidity_max;
+    if (limitsUpdateCounter == 0) {
+        document.getElementById('temperature-min').value = values.temperature_min;
+        document.getElementById('temperature-max').value = values.temperature_max;
+        document.getElementById('humidity-min').value = values.humidity_min;
+        document.getElementById('humidity-max').value = values.humidity_max;
+    }
 
     document.getElementById('temperature-limits-box').textContent = `MIN: ${values.temperature_min} ºC | MAX:  ${values.temperature_max} ºC`;
     document.getElementById('humidity-limits-box').textContent = `MIN: ${values.humidity_min}% | MAX: ${values.humidity_max}%`;
@@ -138,6 +142,8 @@ async function updateData() {
         sensors_limit_values.humidity_max    = (data.humidity_max !== undefined)    ? data.humidity_max    : 60;
 
         updateSensorInputs(sensors_limit_values);
+
+        limitsUpdateCounter++;
 
         // Atualiza os cards superiores
         document.getElementById('pressure-box').textContent    = `${Math.round(pressureValue)} kPa`;
@@ -212,21 +218,18 @@ document.getElementById('plots-card-control').addEventListener('click', (e) => {
 });
 
 async function updateLimits(params) {
-    const url = "/api/sensors/limits/update";
+    // Cria a URL com os parâmetros GET
+    const queryParams = new URLSearchParams({
+        temperature_min: params.temperature_min,
+        temperature_max: params.temperature_max,
+        humidity_min: params.humidity_min,
+        humidity_max: params.humidity_max
+    });
+
+    const url = `/api/sensors/limits/update?${queryParams.toString()}`;
 
     try {
-        const response = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                temperature_min: params.temperature_min,
-                temperature_max: params.temperature_max,
-                humidity_min: params.humidity_min,
-                humidity_max: params.humidity_max
-            })
-        });
+        const response = await fetch(url);
 
         if (!response.ok) {
             console.log("Erro ao salvar os limites!!!");
@@ -243,7 +246,6 @@ async function updateLimits(params) {
         sensors_limit_values.humidity_max    = params.humidity_max;
 
         updateSensorInputs(sensors_limit_values);
-        // console.log("Resposta do servidor:", data);
     } catch (error) {
         console.error("Erro na requisição:", error);
     }
@@ -255,9 +257,9 @@ document.getElementById('btn-sensors-levels').addEventListener('click', function
         temperature_max: document.getElementById('temperature-max').value,
         humidity_min: document.getElementById('humidity-min').value,
         humidity_max: document.getElementById('humidity-max').value
-};
+    };
 
-updateLimits(sensors_limit_to_update);
+    updateLimits(sensors_limit_to_update);
 });
 
 setInterval(updateData, 2000);
